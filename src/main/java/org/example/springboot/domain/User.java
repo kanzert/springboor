@@ -59,7 +59,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends git init> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
 
