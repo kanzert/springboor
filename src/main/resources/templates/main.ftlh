@@ -1,42 +1,39 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+<#import "parts/common.ftlh" as c>
+<#import "parts/login.ftlh" as l>
+
+<@c.page>
     <div>
-        <form action="/logout" method="post">
-            <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
-            <input type="submit" value="Sign Out"/>
-        </form>
+        <@l.logout />
+        <span><a href="/user">User list</a></span>
     </div>
-
-
     <div>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <input  type="text" name="text" placeholder="Введите сообщение">
             <input  type="text" name="tag" placeholder="Тэг">
-            <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+            <input type="file" name="file">
+            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit">Добавить</button>
         </form>
     </div>
     <div>Список сообщений</div>
-    <form method="post" action="filter">
-        <input type="text" name="filter">
-        <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <form method="get" action="/main">
+        <input type="text" name="filter" value="${filter?ifExists}">
         <button type="submit">Найти</button>
     </form>
-    {{#messages}}
+    <#list messages as message>
     <div>
-        <b>{{id}}</b>
-        <span>{{text}}</span>
-        <i>{{tag}}</i>
-        <strong>{{authorName}}</strong>
+        <b>${message.id}</b>
+        <span>${message.text}</span>
+        <i>${message.tag}</i>
+        <strong>${message.authorName}</strong>
+        <div>
+            <#if message.filename??>
+                <img src="/img/${message.filename}">
+            </#if>
+        </div>
     </div>
-    {{/messages}}
-</body>
-</html>
+    <#else>
+        No message
+    </#list>
+
+</@c.page>
